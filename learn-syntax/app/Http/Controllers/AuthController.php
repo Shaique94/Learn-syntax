@@ -66,7 +66,10 @@ class AuthController extends Controller
         try {
             $user = JWTAuth::setToken($token)->authenticate();
             $role = 'user';
-            if ($user->isAdmin) {
+
+            if($user->is_admin){
+
+
                 $role = 'admin';
             }
 
