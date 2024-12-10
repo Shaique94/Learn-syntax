@@ -60,4 +60,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+    public function getIsAdminAttribute()
+    {
+        return $this->attributes['is_admin'] == 1;
+    }
 }
