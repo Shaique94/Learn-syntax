@@ -1,7 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+
 use App\Http\Controllers\ChapterController;
+
+use App\Http\Controllers\TopicApiController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,4 +23,7 @@ Route::apiResource('chapter',ChapterController::class);
 
 
 
- 
+//Routes for topic
+Route::post('chapters/{chapterId}/topics', [TopicApiController::class, 'store']);
+Route::put('chapters/{chapterId}/topics/{topicId}', [TopicApiController::class, 'update']);
+Route::delete('chapters/{chapterId}/topics/{topicId}', [TopicApiController::class, 'destroy']);
