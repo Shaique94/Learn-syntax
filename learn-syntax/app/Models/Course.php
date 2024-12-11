@@ -15,4 +15,9 @@ class Course extends Model
         'course_slug',
 
     ];
+
+    public function chapters()
+    {
+        return $this->hasMany(Chapter::class, 'course_id');
+    }
 }
