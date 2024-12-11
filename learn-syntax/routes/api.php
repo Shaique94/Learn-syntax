@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\AuthController;
 
+use App\Http\Controllers\CourseController;
+
+
 use App\Http\Controllers\ChapterController;
 
 use App\Http\Controllers\TopicApiController;
@@ -19,7 +22,11 @@ Route::post('auth/register', [AuthController::class, 'register']);
 Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/logout', [AuthController::class, 'logout']);
 
+
+Route::apiResource('courses',CourseController::class);
+
 Route::apiResource('chapter',ChapterController::class);
+
 
 
 
