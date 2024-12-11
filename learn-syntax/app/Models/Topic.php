@@ -15,8 +15,12 @@ class Topic extends Model
     ];
 
 
+    // public function chapter()
+    // {
+    //     return $this->hasMany(Chapter::class, "id", "chapter_id");
+    // }
     public function chapter()
     {
-        return $this->hasMany(Chapter::class, "id", "chapter_id");
+        return $this->belongsTo(Chapter::class);
     }
 }
