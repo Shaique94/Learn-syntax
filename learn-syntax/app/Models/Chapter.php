@@ -22,8 +22,16 @@ class Chapter extends Model
 
     ];
 
+    // public function course()
+    // {
+    //     return $this->hasMany(Course::class, "id", "course_id");
+    // }
     public function course()
     {
-        return $this->hasMany(Course::class, "id", "course_id");
+    return $this->belongsTo(Course::class,'course_id');
+    }
+    public function topic()
+    {
+        return $this->hasMany(Topic::class, 'chapter_id');
     }
 }
