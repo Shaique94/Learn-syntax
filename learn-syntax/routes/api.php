@@ -34,3 +34,9 @@ Route::apiResource('chapter',ChapterController::class);
 Route::post('chapters/{chapterId}/topics', [TopicApiController::class, 'store']);
 Route::put('chapters/{chapterId}/topics/{topicId}', [TopicApiController::class, 'update']);
 Route::delete('chapters/{chapterId}/topics/{topicId}', [TopicApiController::class, 'destroy']);
+//below route will be for only specific chapter's topic
+Route::get('chapters/{chapterId}/topics/{topicId}/show', [TopicApiController::class, 'show']);
+//below route will show all the topics of particular chapter
+Route::get('chapters/{chapterId}/topics', [TopicApiController::class, 'index']);
+
+
