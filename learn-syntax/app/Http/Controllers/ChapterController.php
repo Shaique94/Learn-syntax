@@ -14,19 +14,12 @@ class ChapterController extends Controller
      */
     public function index($courseId)
     {
-        $chapters = Chapter::where("course_id",$courseId)->orderBy('order')->get();
+        $chapter = Chapter::all();
 
-        if($chapters->isEmpty()){
-            return response()->json([
-                'status' => 404,
-                'message' => 'No Chapters Found For This Topic',
-
-            ],404);
-        }
         return response()->json([
-            'status' => 404,
-            'data' =>$chapters,
-        ],200);
+            'status' => 200,
+            'data' => $chapter,
+        ]);
     }
 
     /**
@@ -59,23 +52,21 @@ class ChapterController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($courseId,$chapterId)
+    public function show($id)
     {
-        $chapter = Chapter::where(['course_id',$courseId])->where('id',$chapterId)->first();
-        if(!$chapter){
+        $chapter = Chapter::with('topic')->find($id);
+    
+        if (!$chapter) {
             return response()->json([
-                'status' => 404,
-                'message' =>'Chapter not Found',
-
-            ],404);
+                'message' => 'chapter not found',
+            ], 404);
         }
+    
         return response()->json([
-            'status' =>200,
-            'data'=>$chapter,
-
-        ]);
+            'message' => 'chapter Fetched Successfully',
+            'data' => $chapter,
+        ], 200);
     }
-
     /**
      * Update the specified resource in storage.
      */

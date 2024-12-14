@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Chapter;
 use App\Models\Course;
 
 use Illuminate\Http\Request;
@@ -22,17 +23,13 @@ class CourseController extends Controller
             'data' => $course,
         ]);
     }
-    /**
-     * Store a newly created resource in storage.
-     */
    
         public function store(Request $request)
         {
-          
-        
+
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:255',
-                'description' => 'required|string|max:225',
+                'description' => 'required|string|max:550',
                 'image' => 'required|image|max:2048',
             ]);
     
@@ -64,30 +61,24 @@ class CourseController extends Controller
                 'data' => $course,
             ], 201);
         }
-    
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $slug)
-    {
-        $course = Course::where('course_slug', $slug)->first();
-
-        if (!$course) {
+        public function show($id)
+        {
+            $course = Course::with('chapters')->find($id);
+        
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Course not found',
+                ], 404);
+            }
+        
             return response()->json([
-                'status' => 404,
-                'message' => 'Course not found.',
-            ], 404);
+                'message' => 'Course Fetched Successfully',
+                'data' => $course,
+            ], 200);
         }
-
-        return response()->json([
-            'status' => 200,
-            'data' => $course,
-        ]);
-    }
-    /**
-     * Update the specified resource in storage.
-     */
+        
+    
     public function update(Request $request, string $slug)
     {
         $course = Course::where('course_slug', $slug)->first();
@@ -101,7 +92,7 @@ class CourseController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|required|string|max:225',
+            'description' => 'sometimes|required|string|max:550',
             'image' => 'sometimes|required|image|max:2048',
         ]);
 
@@ -114,19 +105,16 @@ class CourseController extends Controller
 
         $validated = $validator->validated();
 
-       
         if ($request->has('title')) {
             $validated['course_slug'] = Str::slug($validated['title']);
         }
 
-        
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->storeAs('images', $imageName, 'public');
             $validated['image'] = 'images/' . $imageName;
 
-           
             if ($course->image) {
                 Storage::disk('public')->delete($course->image);
             }
@@ -141,10 +129,6 @@ class CourseController extends Controller
         ]);
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $slug)
     {
         $course = Course::where('course_slug', $slug)->first();
@@ -156,7 +140,6 @@ class CourseController extends Controller
             ], 404);
         }
 
-        
         if ($course->image) {
             Storage::disk('public')->delete($course->image);
         }
