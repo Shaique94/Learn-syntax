@@ -22,12 +22,14 @@ Route::post('auth/register', [AuthController::class, 'register']);
 Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/logout', [AuthController::class, 'logout']);
 
-
 Route::apiResource('courses',CourseController::class);
 
 Route::apiResource('chapter',ChapterController::class);
+Route::get('courses/{courseId}/show',[CourseController::class,'show']);
+Route::get('courses/{course_id}', [CourseController::class, 'index']);
 
-
+Route::get('chapters/{chapterId}/show',[ChapterController::class,'show']);
+Route::get('chapters/{chapter_id}',[ChapterController::class,'index']);
 
 
 //Routes for topic
