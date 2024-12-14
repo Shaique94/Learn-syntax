@@ -67,6 +67,40 @@ class TopicApiController extends Controller
          return response()->json(['message' => 'Topic updated successfully', 'topic' => $topic], 200);
      }
 
+    //Showing  a specific topic
+    public function show($chapterId, $topicId){
+        $topic = Topic::where('chapter_id', $chapterId)->where('id', $topicId)->first();
+        if(!$topic){
+            return response()->json([
+                'status' => 404,
+                'message' =>'topic not Found',
+
+            ],404);
+        }
+        return response()->json([
+            'status' =>200,
+            'data'=>$topic,
+        ]);
+    }
+
+    //Showing every topic of chapter
+    public function index($chapterId){
+        $topics = Topic::where('chapter_id', $chapterId)->orderBy('order', 'asc')->get();
+
+        // Check if any topics are found
+    if ($topics->isEmpty()) {
+        return response()->json([
+            'status' => 404,
+            'message' => 'No topics found for this chapter',
+        ], 404);
+    }
+
+    return response()->json([
+        'status' => 200,
+        'data' => $topics,
+    ], 200);
+    }
+
      // Delete a topic
     public function destroy($chapterId, $topicId)
     {
