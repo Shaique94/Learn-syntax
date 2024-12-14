@@ -25,8 +25,11 @@ Route::post('auth/logout', [AuthController::class, 'logout']);
 
 Route::apiResource('courses',CourseController::class);
 
-Route::apiResource('chapter',ChapterController::class);
 
+Route::get('courses/{courseId}/chapters/{chapterId}/show', [ChapterController::class, 'show']);
+Route::post('courses/{courseId}/chapters', [ChapterController::class, 'store']);
+Route::put('courses/{courseId}/chapters', [ChapterController::class, 'update']);
+Route::delete('courses/{courseId}/chapters', [ChapterController::class, 'destroy']);
 
 
 

@@ -12,12 +12,20 @@ class ChapterController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($courseId)
     {
-        $chapter = Chapter::with("course")->get();
+        $chapters = Chapter::where("course_id",$courseId)->orderBy('order')->get();
+
+        if($chapters->isEmpty()){
+            return response()->json([
+                'status' => 404,
+                'message' => 'No Chapters Found For This Topic',
+
+            ],404);
+        }
         return response()->json([
-            'message' => 'Chapter Fetched Successfully',
-            'data' =>$chapter,
+            'status' => 404,
+            'data' =>$chapters,
         ],200);
     }
 
@@ -51,9 +59,9 @@ class ChapterController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $slug)
+    public function show($courseId,$chapterId)
     {
-        $chapter = Chapter::where(['course'])->where('chapter_slug',$slug)->first();
+        $chapter = Chapter::where(['course_id',$courseId])->where('id',$chapterId)->first();
         if(!$chapter){
             return response()->json([
                 'status' => 404,
@@ -71,7 +79,7 @@ class ChapterController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $slug)
+    public function update(Request $request, $courseId, $chapterId )
     {
         if (empty($request->all())) {
             return response()->json([
@@ -80,13 +88,13 @@ class ChapterController extends Controller
             ], 400);
         }
 
-        $chapter = Chapter::where('chapter_slug', $slug)->firstOrFail();
+        $chapter = Chapter::where('course_id', $courseId)->where('id',$chapterId)->first();
 
         $validatedData = [];
 
         if ($request->has('course_id')) {
             $validator = Validator::make($request->only('course_id'), [
-                'course_id' => 'required|exists:courses,id',
+                'course_id' => 'required',
             ]);
 
             if ($validator->fails()) {
@@ -161,11 +169,13 @@ class ChapterController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($courseId, $chapterId)
     {
-        $chapter = Chapter::find($id);
+        $chapter = Chapter::where('course_id',$courseId)->where('id',$chapterId)->first();
+        if (!$chapter) {
+            return response()->json(['error' => 'Chapter not found'], 404);
+        }
         $chapter->delete();
-
-        return response()->json(['message' => 'Chapter deleted successfully.']);
+        return response()->json(['message' => 'Chapter deleted successfully.'],200);
     }
 }

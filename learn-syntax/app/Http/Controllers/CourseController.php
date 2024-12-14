@@ -15,11 +15,11 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::all();
+        $course = Course::all();
 
         return response()->json([
             'status' => 200,
-            'data' => $courses,
+            'data' => $course,
         ]);
     }
     /**
