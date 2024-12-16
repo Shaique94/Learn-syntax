@@ -66,6 +66,21 @@ class AuthController extends Controller
             $user = JWTAuth::parseToken()->authenticate();
         } catch (\Exception $e) {
             return response()->json(['error' => 'Token is invalid or expired'], 401);
+            $user = JWTAuth::setToken($token)->authenticate();
+            $role = 'user';
+
+            if($user->is_admin){
+                 $role = 'admin';
+            }
+
+            return response()->json([
+                'message' => 'Authenticated as' . ucfirst($role),
+                'user' => $user,
+                'role' => $role,
+                'expires_in' => auth()->factory()->getTTL() * 60,
+            ], 200);
+        } catch (TokenExpiredException $e) {
+            return response()->json(['error' => 'Token has Expired'], 401);
         }
     
         // Validate request input
