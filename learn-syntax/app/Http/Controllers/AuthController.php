@@ -68,9 +68,7 @@ class AuthController extends Controller
             $role = 'user';
 
             if($user->is_admin){
-
-
-                $role = 'admin';
+                 $role = 'admin';
             }
 
             return response()->json([

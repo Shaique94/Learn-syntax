@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\QuizProgress;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,11 @@ class QuizProgressApi extends Controller
      */
     public function index()
     {
-        //
+        $quizprogress = QuizProgress::all();
+        return response()->json([
+            'status' => 200,
+            'data' => $quizprogress
+        ]);
     }
 
     /**
@@ -32,9 +37,7 @@ class QuizProgressApi extends Controller
                 'errors' => $validator->messages(),
             ], 422);
         }
-
-    
-    }
+}
 
     /**
      * Display the specified resource.
