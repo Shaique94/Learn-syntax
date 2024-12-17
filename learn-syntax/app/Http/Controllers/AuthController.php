@@ -67,14 +67,16 @@ class AuthController extends Controller
             $user = JWTAuth::setToken($token)->authenticate();
             $role = 'user';
 
-            if($user->is_admin){
-                 $role = 'admin';
+            if ($user->is_admin) {
+                $role = 'admin';
             }
 
+            $adminData = User::where('is_admin', 1)->get();
             return response()->json([
                 'message' => 'Authenticated as' . ucfirst($role),
                 'user' => $user,
                 'role' => $role,
+                'allAdmin' => $adminData,
                 'expires_in' => auth()->factory()->getTTL() * 60,
             ], 200);
         } catch (TokenExpiredException $e) {
@@ -130,6 +132,5 @@ class AuthController extends Controller
             'user' => $user,
             'expires_in' => auth()->factory()->getTTL() * 60,
         ]);
-    }  
-
+    }
 }
