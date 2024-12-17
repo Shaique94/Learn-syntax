@@ -130,9 +130,9 @@ class CourseController extends Controller
         ]);
     }
 
-    public function destroy(string $slug)
+    public function destroy(string $id)
     {
-        $course = Course::where('course_slug', $slug)->first();
+        $course = Course::where('id', $id)->first();
 
         if (!$course) {
             return response()->json([
