@@ -144,5 +144,49 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ]
         ]);
+
+        DB::table('posts')->insert([
+            [
+                'topic_id' => 1, // Links to 'HTML Tags Overview' topic
+                'title' => 'HTML Tags Overview: Complete Guide',
+                'content' => 'This post provides a comprehensive overview of all HTML tags, their purposes, and usage examples. Learn how to structure HTML documents with essential tags like <div>, <span>, <header>, <footer>, and more.',
+                'image_path' => 'images/html-tags-overview.jpg',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'topic_id' => 2, // Links to 'HTML Forms' topic
+                'title' => 'Mastering HTML Forms',
+                'content' => 'Forms are a critical part of web development. This post dives into the different types of form inputs, like text fields, radio buttons, checkboxes, and how to process form data with GET and POST methods.',
+                'image_path' => 'images/html-forms.jpg',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'topic_id' => 3, // Links to 'CSS Selectors' topic
+                'title' => 'CSS Selectors Explained',
+                'content' => 'CSS selectors are essential for targeting specific elements on a webpage. In this post, we discuss universal selectors, class selectors, ID selectors, attribute selectors, and more.',
+                'image_path' => 'images/css-selectors.jpg',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'topic_id' => 4, // Links to 'CSS Flexbox' topic
+                'title' => 'CSS Flexbox: Layouts Made Easy',
+                'content' => 'The Flexbox layout system provides a powerful way to arrange items in a container. This post explains the key concepts of Flexbox, including justify-content, align-items, and flex-grow.',
+                'image_path' => 'images/css-flexbox.jpg',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'topic_id' => 5, // Links to 'Promises in JavaScript' topic
+                'title' => 'Mastering JavaScript Promises',
+                'content' => 'Promises are used to handle asynchronous operations in JavaScript. This post provides a step-by-step guide on how promises work, how to create them, and how to chain multiple promises for effective async workflows.',
+                'image_path' => 'images/promises-in-javascript.jpg',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        ]);
+        
     }
 }
