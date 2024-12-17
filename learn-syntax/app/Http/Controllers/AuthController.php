@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -55,15 +57,15 @@ class AuthController extends Controller
         return response()->json(['error' => 'Invalid credentials', 'message' => 'login successfully'], 401);
     }
 
-    // Get user info method
-    public function user(Request $request)
+   
+   
+    public function User(Request $request)
     {
-        // Get token from request
-        $token = $request->bearerToken();
-        if (!$token) {
-            return response()->json(['error' => 'Token is required'], 401);
-        }
+        // Get the authenticated user
         try {
+            $user = JWTAuth::parseToken()->authenticate();
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Token is invalid or expired'], 401);
             $user = JWTAuth::setToken($token)->authenticate();
             $role = 'user';
 
@@ -82,11 +84,31 @@ class AuthController extends Controller
         } catch (TokenExpiredException $e) {
             return response()->json(['error' => 'Token has Expired'], 401);
         }
-
-        // Get authenticated user based on the token
-        $user = JWTAuth::user();
-        return response()->json(['user' => $user], 200);
+    
+        // Validate request input
+        $request->validate([
+            'name' => 'nullable|string|max:255', // Optional name field
+            'password' => 'nullable|string|min:6', // Optional password field
+        ]);
+    
+        // Update user fields if provided in the request
+        if ($request->has('name')) {
+            $user->name = $request->input('name');
+        }
+        if ($request->has('password')) {
+            $user->password = Hash::make($request->input('password'));
+        }
+    
+        // Save the updated user data
+        $user->save();
+    
+        // Return response
+        return response()->json([
+            'message' => 'User profile updated successfully',
+            'user' => $user,
+        ], 200);
     }
+    
 
     // Logout method
     public function logout()
@@ -121,6 +143,8 @@ class AuthController extends Controller
             ], 401);
         }
     }
+
+    
 
     // Respond with token details
     protected function respondWithToken($token)
