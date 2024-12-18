@@ -35,7 +35,7 @@ Route::delete('chapters/{chapterId}/topics/{topicId}', [TopicApiController::clas
 Route::get('chapters/{chapterId}/topics/{topicId}/show', [TopicApiController::class, 'show']);
 //below route will show all the topics of particular chapter
 Route::get('chapters/{chapterId}/topics', [TopicApiController::class, 'index']);
-Route::get('/dashboard-count', [DashboardController::class, 'getStats']);
+Route::get('/dashboard-count', [DashboardController::class, 'getData']);
 
 
 

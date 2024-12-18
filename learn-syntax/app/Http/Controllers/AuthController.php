@@ -57,59 +57,55 @@ class AuthController extends Controller
         return response()->json(['error' => 'Invalid credentials', 'message' => 'login successfully'], 401);
     }
 
-   
-   
+
+
     public function User(Request $request)
     {
-        // Get the authenticated user
         try {
+            // Authenticate user using token
             $user = JWTAuth::parseToken()->authenticate();
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Token is invalid or expired'], 401);
-            $user = JWTAuth::setToken($token)->authenticate();
-            $role = 'user';
 
-            if ($user->is_admin) {
-                $role = 'admin';
+            // Determine user role
+            $role = $user->is_admin ? 'admin' : 'user';
+
+            // If the role is admin, fetch all admin users
+            $adminData = [];
+            if ($role === 'admin') {
+                $adminData = User::where('is_admin', 1)->get();
             }
 
-            $adminData = User::where('is_admin', 1)->get();
+            // Handle optional profile updates
+            $request->validate([
+                'name' => 'nullable|string|max:255',
+                'password' => 'nullable|string|min:6',
+            ]);
+
+            if ($request->has('name')) {
+                $user->name = $request->input('name');
+            }
+
+            if ($request->has('password')) {
+                $user->password = Hash::make($request->input('password'));
+            }
+
+            // Save updated user data
+            $user->save();
+
             return response()->json([
-                'message' => 'Authenticated as' . ucfirst($role),
+                'message' => 'Authenticated as ' . ucfirst($role),
                 'user' => $user,
                 'role' => $role,
                 'allAdmin' => $adminData,
                 'expires_in' => auth()->factory()->getTTL() * 60,
             ], 200);
-        } catch (TokenExpiredException $e) {
-            return response()->json(['error' => 'Token has Expired'], 401);
+        } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+            return response()->json(['error' => 'Token has expired'], 401);
+        } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+            return response()->json(['error' => 'Token is invalid'], 401);
+        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
+            return response()->json(['error' => 'Token is missing'], 401);
         }
-    
-        // Validate request input
-        $request->validate([
-            'name' => 'nullable|string|max:255', // Optional name field
-            'password' => 'nullable|string|min:6', // Optional password field
-        ]);
-    
-        // Update user fields if provided in the request
-        if ($request->has('name')) {
-            $user->name = $request->input('name');
-        }
-        if ($request->has('password')) {
-            $user->password = Hash::make($request->input('password'));
-        }
-    
-        // Save the updated user data
-        $user->save();
-    
-        // Return response
-        return response()->json([
-            'message' => 'User profile updated successfully',
-            'user' => $user,
-        ], 200);
     }
-    
-
     // Logout method
     public function logout()
     {

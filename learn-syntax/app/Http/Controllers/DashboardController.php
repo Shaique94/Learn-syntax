@@ -7,7 +7,7 @@ use App\Models\Topic;
 
 class DashboardController extends Controller
 {
-    public function getStats()
+    public function getData()
     {
         try {
            

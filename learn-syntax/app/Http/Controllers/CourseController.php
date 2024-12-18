@@ -129,26 +129,16 @@ class CourseController extends Controller
         ]);
     }
 
-    public function destroy(string $id)
+    public function destroy($courseId, $chapterId)
     {
-        $course = Course::where('id', $id)->first();
+        $course = Course::where('chapter_id', $chapterId)->where('id', $courseId)->first();
 
         if (!$course) {
-            return response()->json([
-                'status' => 404,
-                'message' => 'Course not found.',
-            ], 404);
-        }
-
-        if ($course->image) {
-            Storage::disk('public')->delete($course->image);
+            return response()->json(['error' => 'Course not found'], 404);
         }
 
         $course->delete();
 
-        return response()->json([
-            'status' => 200,
-            'message' => 'Course deleted successfully.',
-        ]);
+        return response()->json(['message' => 'Course deleted successfully'], 200);
     }
 }
