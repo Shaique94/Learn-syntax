@@ -23,4 +23,8 @@ class Topic extends Model
     {
         return $this->belongsTo(Chapter::class);
     }
+
+    public function post(){
+        return $this->hasOne(Post::class,"topic_id");
+    }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PostApiController;
 use App\Http\Controllers\TopicApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -37,5 +38,12 @@ Route::get('chapters/{chapterId}/topics/{topicId}/show', [TopicApiController::cl
 Route::get('chapters/{chapterId}/topics', [TopicApiController::class, 'index']);
 Route::get('/dashboard-count', [DashboardController::class, 'getData']);
 
+//Routes for the post 
+Route::prefix('topics/{topicId}')->group(function () {
+   Route::get('/post', [PostApiController::class, 'show']); // Get the post for a specific topic
+   Route::post('/post', [PostApiController::class, 'store']); // Create a new post for a specific topic
+   Route::put('/post', [PostApiController::class, 'update']); // Update the post for a specific topic
+   Route::delete('/post', [PostApiController::class, 'destroy']); // Delete the post for a specific topic
+});
 
 
