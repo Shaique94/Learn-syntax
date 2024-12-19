@@ -30,7 +30,6 @@ class TopicApiController extends Controller
             $topic->save();
             
         }
-    
         return response()->json(['message' => 'Topic added', 'topic' => $topic], 201);
     }
 
