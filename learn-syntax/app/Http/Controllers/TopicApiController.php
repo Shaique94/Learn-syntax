@@ -35,91 +35,50 @@ class TopicApiController extends Controller
     }
 
     // Update a topic
-    public function update(Request $request,  $chapterId,$topicId)
-    {
-        if (empty($request->all())) {
-            return response()->json([
-                'status' => 400,
-                'message' => 'No data received. Ensure you are sending data correctly.',
-            ], 400);
-        }
+  // Update a topic
+public function update(Request $request, $chapterId, $topicId)
+{
+    // Fetch the topic based on chapter ID and topic ID
+    $topic = Topic::where('chapter_id', $chapterId)->where('id', $topicId)->first();
 
-        $topic = Topic::where('chapter_id', $chapterId)->where('id', $topicId)->first();
-
-        $validatedData = [];
-
-        if ($request->has('chapter_id')) {
-            $validator = Validator::make($request->only('chapter_id'), [
-                'chapter_id' => 'required',
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => 422,
-                    'errors' => $validator->messages(),
-                ], 422);
-            }
-
-            $validatedData['chapter_id'] = $request->input('chapter_id');
-        }
-
-        if ($request->has('topic_name')) {
-            $validator = Validator::make($request->only('topic_name'), [
-                'topic_name' => 'required|string',
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => 422,
-                    'errors' => $validator->messages(),
-                ], 422);
-            }
-
-            $topic_name = $request->input('topic_name');
-            $validatedData['topic_name'] = $topic_name;
-            $validatedData['topic_slug'] = Str::slug($topic_name);
-        }
-
-        if ($request->has('topic_description')) {
-            $validator = Validator::make($request->only('topic_description'), [
-                'topic_description' => 'required|string',
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => 422,
-                    'errors' => $validator->messages(),
-                ], 422);
-            }
-
-            $validatedData['topic_description'] = $request->input('topic_description');
-        }
-
-        if ($request->has('order')) {
-            $validator = Validator::make($request->only('order'), [
-                'order' => 'required|integer',
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => 422,
-                    'errors' => $validator->messages(),
-                ], 422);
-            }
-
-            $validatedData['order'] = $request->input('order');
-        }
-
-        if (!empty($validatedData)) {
-            $topic->update($validatedData);
-        }
-
+    if (!$topic) {
         return response()->json([
-            'status' => 200,
-            'message' => 'Topic updated successfully',
-            'data' => $topic,
-        ]);
+            'status' => 404,
+            'message' => 'Topic not found',
+        ], 404);
     }
+
+    // Validate and prepare data for update
+    $validatedData = $request->validate([
+        'chapter_id' => 'sometimes|required|integer|exists:chapters,id',
+        'topic_name' => 'sometimes|required|string',
+        'topic_description' => 'sometimes|required|string',
+        'order' => 'sometimes|required|integer',
+    ]);
+
+    // Add the topic slug if the topic name is being updated
+    if (isset($validatedData['topic_name'])) {
+        $validatedData['topic_slug'] = Str::slug($validatedData['topic_name']);
+    }
+
+    // Check if there's anything to update
+    if (empty($validatedData)) {
+        return response()->json([
+            'status' => 400,
+            'message' => 'No data provided to update the topic.',
+        ], 400);
+    }
+
+    // Perform the update
+    $topic->update($validatedData);
+
+    return response()->json([
+        'status' => 200,
+        'message' => 'Topic updated successfully',
+        'data' => $topic,
+    ]);
+}
+
 
     //Showing  a specific topic
     public function show($chapterId, $topicId){
