@@ -66,10 +66,6 @@ class CourseController extends Controller
         {
 
             $course = Course::with('chapters.topic')->find($id);
-        
-
-            
-
             if (!$course) {
                 return response()->json([
                     'message' => 'Course not found',
