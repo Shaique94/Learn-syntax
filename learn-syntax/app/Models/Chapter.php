@@ -30,8 +30,9 @@ class Chapter extends Model
     {
     return $this->belongsTo(Course::class,'course_id');
     }
-    public function topic()
+    public function topics()
     {
-        return $this->hasMany(Topic::class, 'chapter_id');
+        return $this->hasMany(Topic::class);
     }
+    
 }
