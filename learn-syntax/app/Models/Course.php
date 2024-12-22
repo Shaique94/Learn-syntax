@@ -17,7 +17,8 @@ class Course extends Model
     ];
 
     public function chapters()
-    {
-        return $this->hasMany(Chapter::class, 'course_id');
-    }
+{
+    return $this->hasMany(Chapter::class);
+}
+
 }

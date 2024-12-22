@@ -53,9 +53,10 @@ class ChapterController extends Controller
      * Display the specified resource.
      */
     public function show($id)
-    {
-        $chapter = Chapter::with('topic')->find($id);
     
+    {
+        $chapter = Chapter::with(['topics.post'])->find($id);
+
         if (!$chapter) {
             return response()->json([
                 'message' => 'chapter not found',
@@ -67,9 +68,7 @@ class ChapterController extends Controller
             'data' => $chapter,
         ], 200);
     }
-    /**
-     * Update the specified resource in storage.
-     */
+   
     public function update(Request $request, $courseId, $chapterId )
     {
         if (empty($request->all())) {
@@ -156,10 +155,6 @@ class ChapterController extends Controller
         ]);
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($courseId, $chapterId)
     {
         $chapter = Chapter::where('course_id',$courseId)->where('id',$chapterId)->first();

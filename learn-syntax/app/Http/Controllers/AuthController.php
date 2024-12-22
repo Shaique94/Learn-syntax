@@ -58,7 +58,6 @@ class AuthController extends Controller
     }
 
 
-
     public function User(Request $request)
     {
         try {
@@ -68,10 +67,10 @@ class AuthController extends Controller
             // Determine user role
             $role = $user->is_admin ? 'admin' : 'user';
 
-            // If the role is admin, fetch all admin users
+            // Fetch current admin data if the role is admin
             $adminData = [];
             if ($role === 'admin') {
-                $adminData = User::where('is_admin', 1)->get();
+                $adminData = $user; // Use the authenticated admin user data
             }
 
             // Handle optional profile updates
@@ -95,7 +94,7 @@ class AuthController extends Controller
                 'message' => 'Authenticated as ' . ucfirst($role),
                 'user' => $user,
                 'role' => $role,
-                'allAdmin' => $adminData,
+                'adminData' => $role === 'admin' ? $adminData : null, // Include only for admins
                 'expires_in' => auth()->factory()->getTTL() * 60,
             ], 200);
         } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
@@ -106,6 +105,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Token is missing'], 401);
         }
     }
+
     // Logout method
     public function logout()
     {
