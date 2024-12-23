@@ -9,6 +9,18 @@ use Illuminate\Support\Facades\Validator;
 
 class PostApiController extends Controller
 {
+    public function index()
+    {
+        $post = Post::all();
+
+        return response()->json([
+            'status' => 200,
+            'data' => $post,
+        ]);
+    }
+
+
+   
     // For displaying specified post 
     public function show($topic_id)
     {

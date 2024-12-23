@@ -20,6 +20,6 @@ class Post extends Model
     ];
 
     public function topic(){
-        return $this->belongsTo(Topic::class,'topic_id');
+        return $this->belongsTo(Topic::class);
     }
 }

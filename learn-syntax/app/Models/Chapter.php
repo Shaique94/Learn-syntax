@@ -28,11 +28,11 @@ class Chapter extends Model
     // }
     public function course()
     {
-    return $this->belongsTo(Course::class,'course_id');
+        return $this->belongsTo(Course::class, 'course_id');
     }
-    public function topics()
+
+    public function topic()
     {
         return $this->hasMany(Topic::class);
     }
-    
 }
