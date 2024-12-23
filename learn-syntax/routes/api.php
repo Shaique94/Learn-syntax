@@ -40,6 +40,8 @@ Route::prefix('topics/{topicId}')->group(function () {
    Route::post('/post', [PostApiController::class, 'store']); // Create a new post for a specific topic
    Route::put('/post', [PostApiController::class, 'update']); // Update the post for a specific topic
    Route::delete('/post', [PostApiController::class, 'destroy']); // Delete the post for a specific topic
+   Route::get('/topics/{topicId}/drafts', [PostApiController::class, 'getDrafts']);
+
 });
 
 
