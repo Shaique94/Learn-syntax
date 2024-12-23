@@ -26,23 +26,29 @@ class PostApiController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
+            'status' => 'in:draft,published',
         ]);
+
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->error()], 422);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
+
         $topic = Topic::findOrFail($topicId);
 
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('posts', 'public');
         }
+
         $post = Post::create([
             'topic_id' => $topic->id,
             'title' => $request->title,
             'content' => $request->content,
             'image_path' => $imagePath,
+            'status' => $request->status ?? 'draft', // Default to draft if not provided
         ]);
+
         return response()->json(['message' => 'Post created successfully.', 'post' => $post], 201);
     }
 
@@ -52,7 +58,7 @@ class PostApiController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
+            'image' => 'nullable|image',
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
