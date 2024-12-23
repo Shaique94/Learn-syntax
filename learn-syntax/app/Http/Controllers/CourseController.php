@@ -65,7 +65,7 @@ class CourseController extends Controller
         public function show($id)
         {
 
-            $course = Course::with('chapters.topic')->find($id);
+            $course = Course::with('chapters.topics.post')->find($id);
         
 
             if (!$course) {
