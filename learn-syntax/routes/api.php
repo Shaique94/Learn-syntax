@@ -13,15 +13,14 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', [AuthController::class, 'user']);
 Route::middleware('auth:api')->put('/user', [AuthController::class, 'user']);
 
- 
+// Authentication routes
 Route::post('auth/register', [AuthController::class, 'register']);
 Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/logout', [AuthController::class, 'logout']);
- 
-Route::apiResource('courses',CourseController::class);
-Route::apiResource('chapters',ChapterController::class);
 
-Route::get('courses/{courseId}/show',[CourseController::class,'show']);
+// Course routes
+Route::apiResource('courses', CourseController::class);
+Route::get('courses/{courseId}/show', [CourseController::class, 'show']);
 Route::get('courses/{course_id}', [CourseController::class, 'index']);
 
 // Chapter routes
@@ -39,10 +38,7 @@ Route::get('chapters/{chapterId}/topics', [TopicApiController::class, 'index']);
 // Dashboard data route
 Route::get('/dashboard-count', [DashboardController::class, 'getData']);
 
- 
-
-//Routes for the post 
-
+// Post routes under a topic
 Route::prefix('topics/{topicId}')->group(function () {
    Route::get('/post', [PostApiController::class, 'show']); // Get the post for a specific topic
    Route::post('/post', [PostApiController::class, 'store']); // Create a new post for a specific topic
