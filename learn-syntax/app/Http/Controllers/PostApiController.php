@@ -39,7 +39,7 @@ class PostApiController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
-            'status' => 'in:draft,published',
+            'status' => 'required|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -58,8 +58,8 @@ class PostApiController extends Controller
             'title' => $request->title,
             'content' => $request->content,
             'image_path' => $imagePath,
-            'status' => $request->status ?? 'draft', // Default to draft if not provided
-        ]);
+            'status' => $request->status ?? false
+            ]);
 
         return response()->json(['message' => 'Post created successfully.', 'post' => $post], 201);
     }

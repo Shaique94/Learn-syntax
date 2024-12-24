@@ -41,14 +41,9 @@ class CourseController extends Controller
             }
     
             $validated = $validator->validated();
-    
-            
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $imageName = time() . '.' . $image->getClientOriginalExtension();
-                $image->storeAs('images', $imageName, 'public');
-                $validated['image'] = 'images/' . $imageName;
-            }
+
+
+        $validated['image'] = 'icons/default-icon.png'; // Replace with the actual path to your icon
     
            
             $validated['course_slug'] = Str::slug($validated['title']);
@@ -112,15 +107,8 @@ class CourseController extends Controller
             $validated['course_slug'] = Str::slug($validated['title']);
         }
 
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('images', $imageName, 'public');
-            $validated['image'] = 'images/' . $imageName;
-
-            if ($course->image) {
-                Storage::disk('public')->delete($course->image);
-            }
+        if ($request->has('image')) {
+            $validated['image'] = $request->input('image'); // Use the input directly
         }
 
         $course->update($validated);
