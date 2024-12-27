@@ -25,7 +25,7 @@ class PostApiController extends Controller
     public function show($topic_id)
     {
 
-        $post = Post::where('topic_id', $topic_id)->first();
+        $post = Post::where('topic_id', $topic_id)->get();
         if (!$post) {
             return response()->json(['message' => 'Posts not found']);
         } else {
