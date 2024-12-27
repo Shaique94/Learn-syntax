@@ -27,6 +27,8 @@ Route::get('courses/{course_id}', [CourseController::class, 'index']);
 Route::apiResource('chapters', ChapterController::class);
 Route::get('chapters/{chapterId}/show', [ChapterController::class, 'show']);
 Route::get('chapters/{chapter_id}', [ChapterController::class, 'index']);
+Route::put('course/{courseId}/chapter/{chapterId}', [ChapterController::class, 'update']);
+
 
 // Topic routes
 Route::post('chapters/{chapterId}/topics', [TopicApiController::class, 'store']);
@@ -42,7 +44,7 @@ Route::get('/dashboard-count', [DashboardController::class, 'getData']);
 Route::prefix('topics/{topicId}')->group(function () {
    Route::get('/post', [PostApiController::class, 'show']); // Get the post for a specific topic
    Route::post('/post', [PostApiController::class, 'store']); // Create a new post for a specific topic
-   Route::put('/post', [PostApiController::class, 'update']); // Update the post for a specific topic
+   Route::put('/post/{postId}', [PostApiController::class, 'update']); // Update the post for a specific topic
    Route::delete('/post', [PostApiController::class, 'destroy']); // Delete the post for a specific topic
    Route::get('/post',[PostApiController::class,'index']);
    Route::get('/drafts', [PostApiController::class, 'getDrafts']); // Get drafts for a specific topic

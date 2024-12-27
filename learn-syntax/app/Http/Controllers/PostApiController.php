@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Validator;
 
 class PostApiController extends Controller
 {
-    public function index()
+    public function index($topic_id)
     {
-        $post = Post::all();
+        $post = Post::where('topic_id',$topic_id)->get();
 
         return response()->json([
             'status' => 200,
@@ -65,7 +65,7 @@ class PostApiController extends Controller
     }
 
     //for updating the post
-    public function update(Request $request, $topicId)
+    public function update(Request $request, $topic_id)
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
@@ -75,7 +75,7 @@ class PostApiController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        $post = Post::where('topic_id', $topicId)->first();
+        $post = Post::where('topic_id', $topic_id)->first();
         if (!$post) {
             return response()->json(['message' => 'Post not found for the specified topic.'], 404);
         }
@@ -91,9 +91,9 @@ class PostApiController extends Controller
         return response()->json(['message' => 'Post updated successfully.', 'post' => $post], 200);
     }
     //for deleting the post
-    public function destroy($topicId)
+    public function destroy($topic_id)
     {
-        $post = Post::where('topic_id', $topicId)->first();
+        $post = Post::where('topic_id', $topic_id)->first();
 
         if (!$post) {
             return response()->json(['message' => 'Post not found for the specified topic.'], 404);
