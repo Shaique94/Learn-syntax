@@ -27,7 +27,7 @@ Route::get('courses/{course_id}', [CourseController::class, 'index']);
 Route::apiResource('chapters', ChapterController::class);
 Route::get('chapters/{chapterId}/show', [ChapterController::class, 'show']);
 Route::get('chapters/{chapter_id}', [ChapterController::class, 'index']);
-Route::put('course/{courseId}/chapter/{chapterId}', [ChapterController::class, 'update']);
+Route::put('courses/{course_id}/chapters/{chapter_id}', [ChapterController::class, 'update']);
 
 
 // Topic routes
