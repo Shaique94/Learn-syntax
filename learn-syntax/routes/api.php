@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExecuteController;
 use App\Http\Controllers\PostApiController;
 use App\Http\Controllers\TopicApiController;
 use Illuminate\Http\Request;
@@ -49,3 +50,4 @@ Route::prefix('topics/{topicId}')->group(function () {
    // Route::get('/post',[PostApiController::class,'index']);
    Route::get('/drafts', [PostApiController::class, 'getDrafts']); // Get drafts for a specific topic
 });
+Route::post('/execute', [ExecuteController::class, 'execute']);
