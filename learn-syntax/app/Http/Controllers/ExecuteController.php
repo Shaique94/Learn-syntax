@@ -57,21 +57,32 @@ class ExecuteController extends Controller
             return "PHP Error: " . $e->getMessage();
         }
     }
-
     private function executeJavaScript($code)
     {
         try {
-            
-            $escapedCode = escapeshellarg($code);
+            // Define a custom alert in the JavaScript code
+            $customAlertDefinition = <<<JS
+global.alert = (message) => {
+    console.log( message);
+};
+JS;
 
-            
-            $command = "node -e $escapedCode 2>&1";
-            $result = @shell_exec($command);
+            // Prepend the custom alert definition to the user's code
+            $codeWithAlert = $customAlertDefinition . "\n" . $code;
 
-            
+            // Create a temporary file to store the JavaScript code
+            $tempFile = tempnam(sys_get_temp_dir(), 'js_');
+            file_put_contents($tempFile, $codeWithAlert);
+
+            // Execute the code using Node.js
+            $command = "node $tempFile 2>&1"; // Execute the temporary file
+            $result = shell_exec($command);
+
+            // Clean up the temporary file
+            unlink($tempFile);
+
             return $result ?: "No output from JavaScript.";
         } catch (\Throwable $e) {
-            
             return "JavaScript Execution Error: " . $e->getMessage();
         }
     }

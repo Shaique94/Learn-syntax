@@ -50,4 +50,6 @@ Route::prefix('topics/{topicId}')->group(function () {
    // Route::get('/post',[PostApiController::class,'index']);
    Route::get('/drafts', [PostApiController::class, 'getDrafts']); // Get drafts for a specific topic
 });
-Route::post('/execute', [ExecuteController::class, 'execute']);
+Route::middleware([])->group(function () {
+   Route::post('/v2/execute', [ExecuteController::class, 'execute']);
+});
