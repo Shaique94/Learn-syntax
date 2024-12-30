@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExecuteController;
 use App\Http\Controllers\PostApiController;
 use App\Http\Controllers\PostContentApiController;
 use App\Http\Controllers\TopicApiController;
@@ -63,4 +64,7 @@ Route::prefix('topics/{topic_id}/posts')->group(function () {
    Route::put('/{post_id}', [PostContentApiController::class, 'update']); 
    // Delete a specific post in a topic
    Route::delete('/{post_id}', [PostContentApiController::class, 'destroy']);
+});
+Route::middleware([])->group(function () {
+   Route::post('/v2/execute', [ExecuteController::class, 'execute']);
 });
