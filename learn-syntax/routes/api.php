@@ -5,6 +5,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PostApiController;
+use App\Http\Controllers\PostContentApiController;
 use App\Http\Controllers\TopicApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,7 @@ Route::apiResource('chapters', ChapterController::class);
 Route::get('chapters/{chapterId}/show', [ChapterController::class, 'show']);
 Route::get('chapters/{chapter_id}', [ChapterController::class, 'index']);
 
+Route::put('courses/{course_id}/chapters/{chapter_id}', [ChapterController::class, 'update']);
 // Topic routes
 Route::post('chapters/{chapterId}/topics', [TopicApiController::class, 'store']);
 Route::put('chapters/{chapterId}/topics/{topicId}', [TopicApiController::class, 'update']);
@@ -46,4 +48,17 @@ Route::prefix('topics/{topicId}')->group(function () {
    Route::delete('/post', [PostApiController::class, 'destroy']); // Delete the post for a specific topic
    // Route::get('/post',[PostApiController::class,'index']);
    Route::get('/drafts', [PostApiController::class, 'getDrafts']); // Get drafts for a specific topic
+
+});
+Route::prefix('topics/{topic_id}/posts')->group(function () {
+   // Get all posts for a topic
+   // Route::get('/', [PostContentApiController::class, 'index']);  
+   // Get a single post by its ID
+   Route::get('/{post_id}', [PostContentApiController::class, 'show']); 
+   // Create a new post for a topic
+   Route::post('/', [PostContentApiController::class, 'store']); 
+   // Update a specific post in a topic
+   Route::put('/{post_id}', [PostContentApiController::class, 'update']); 
+   // Delete a specific post in a topic
+   Route::delete('/{post_id}', [PostContentApiController::class, 'destroy']);
 });

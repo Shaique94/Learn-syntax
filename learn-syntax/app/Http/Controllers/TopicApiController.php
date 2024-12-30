@@ -50,7 +50,7 @@ public function update(Request $request, $chapterId, $topicId)
 
     // Validate and prepare data for update
     $validatedData = $request->validate([
-        'chapter_id' => 'sometimes|required|integer|exists:chapters,id',
+        // 'chapter_id' => 'sometimes|required|integer|exists:chapters,id',
         'topic_name' => 'sometimes|required|string',
         'topic_description' => 'sometimes|required|string',
         'order' => 'sometimes|required|integer',
