@@ -28,18 +28,24 @@ class ChapterController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'course_id' => 'required',
             'chapter_name' => 'required|string',
             'chapter_description' => 'required|string',
             'order' => 'required|integer',
+            'chapter_description' => 'required|string',
+            'order' => 'required|integer',
         ]);
+        if ($validator->fails()) {
         if ($validator->fails()) {
             return response()->json([
                 'status' => 422,
                 'errors' => $validator->messages(),
             ], 422);
+            ], 422);
         }
         $validated = $validator->validated();
+        $validated["chapter_slug"] = Str::slug($validated['chapter_name']);
         $validated["chapter_slug"] = Str::slug($validated['chapter_name']);
         $chapter = Chapter::create($validated);
         return response()->json([
@@ -47,12 +53,14 @@ class ChapterController extends Controller
             'chapter' => $chapter,
 
         ], 201);
+        ], 201);
     }
 
     /**
      * Display the specified resource.
      */
     public function show($id)
+
 
     {
         $chapter = Chapter::with(['topics.post'])->find($id);
@@ -62,6 +70,7 @@ class ChapterController extends Controller
                 'message' => 'chapter not found',
             ], 404);
         }
+
 
         return response()->json([
             'message' => 'chapter Fetched Successfully',
@@ -82,6 +91,9 @@ class ChapterController extends Controller
 
     //     $chapter = Chapter::where('course_id', $course_id)
     //         ->where('id',  $chapter_id)
+    //         ->first();
+    //     $chapter = Chapter::where('course_id', $courseId)
+    //         ->where('id', $chapterId)
     //         ->first();
 
     //     if (!$chapter) {
@@ -133,13 +145,16 @@ class ChapterController extends Controller
 
 
 
+
     public function destroy($courseId, $chapterId)
     {
+        $chapter = Chapter::where('course_id', $courseId)->where('id', $chapterId)->first();
         $chapter = Chapter::where('course_id', $courseId)->where('id', $chapterId)->first();
         if (!$chapter) {
             return response()->json(['error' => 'Chapter not found'], 404);
         }
         $chapter->delete();
+        return response()->json(['message' => 'Chapter deleted successfully.'], 200);
         return response()->json(['message' => 'Chapter deleted successfully.'], 200);
     }
 }
