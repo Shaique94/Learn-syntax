@@ -17,9 +17,7 @@ class TopicApiController extends Controller
             'topic_name' => 'required|string|max:255', 
             'topic_description' => 'nullable|string',
             'order' => 'nullable|integer',
-        ]);
-       
-        
+        ]);     
         // Create the topic
         if( $validatedData){
             $topic = new Topic();
