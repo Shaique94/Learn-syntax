@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+
 class CourseController extends Controller
 {
     /**
@@ -23,57 +24,62 @@ class CourseController extends Controller
             'data' => $course,
         ]);
     }
-   
-        public function store(Request $request)
-        {
 
-            $validator = Validator::make($request->all(), [
-                'title' => 'required|string|max:255',
-                'description' => 'required|string|max:550',
-                'image' => 'required|image|max:2048',
-            ]);
-    
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => 422,
-                    'errors' => $validator->messages(),
-                ], 422);
-            }
-    
-            $validated = $validator->validated();
+    public function store(Request $request)
+    {
 
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'description' => 'required|string|max:550',
+            'image' => 'required|image|max:2048',
+        ]);
 
-        $validated['image'] = 'icons/default-icon.png'; // Replace with the actual path to your icon
-    
-           
-            $validated['course_slug'] = Str::slug($validated['title']);
-    
-            $course = Course::create($validated);
-    
+        if ($validator->fails()) {
             return response()->json([
-                'status' => 201,
-                'message' => 'Course created successfully.',
-                'data' => $course,
-            ], 201);
+                'status' => 422,
+                'errors' => $validator->messages(),
+            ], 422);
         }
 
-        public function show($id)
-        {
-
-            $course = Course::with('chapters.topics.post')->find($id);
-            if (!$course) {
-                return response()->json([
-                    'message' => 'Course not found',
-                ], 404);
-            }
-        
-            return response()->json([
-                'message' => 'Course Fetched Successfully',
-                'data' => $course,
-            ], 200);
+        $validated = $validator->validated();
+        if ($request->hasFile('image')) {
+            $filePath = $request->file('image')->store('images', 'public');
+            $validated['image'] = $filePath;
+        } else {
+            $validated['image'] = 'icons/default-icon.png'; // Default icon path
         }
-        
-    
+
+       
+
+
+        $validated['course_slug'] = Str::slug($validated['title']);
+
+        $course = Course::create($validated);
+
+        return response()->json([
+            'status' => 201,
+            'message' => 'Course created successfully.',
+            'data' => $course,
+        ], 201);
+    }
+
+    public function show($id)
+    {
+
+        $course = Course::with('chapters.topics.post')->find($id);
+        if (!$course) {
+            return response()->json([
+                'message' => 'Course not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Course Fetched Successfully',
+            'data' => $course,
+        ], 200);
+    }
+
+
     public function update(Request $request, string  $id)
     {
         $course = Course::where('id', $id)->first();
@@ -118,16 +124,19 @@ class CourseController extends Controller
         ]);
     }
 
-    public function destroy($courseId, $chapterId)
+    public function destroy($courseId)
     {
-        $course = Course::where('chapter_id', $chapterId)->where('id', $courseId)->first();
-
+        // Attempt to find the course based on courseId and chapterId
+        $course = Course::where('id', $courseId)->first();
+    
         if (!$course) {
             return response()->json(['error' => 'Course not found'], 404);
         }
-
+    
+        // Delete the course
         $course->delete();
-
+    
         return response()->json(['message' => 'Course deleted successfully'], 200);
     }
+    
 }

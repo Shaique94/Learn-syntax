@@ -30,6 +30,7 @@ Route::apiResource('chapters', ChapterController::class);
 Route::get('chapters/{chapterId}/show', [ChapterController::class, 'show']);
 Route::get('chapters/{chapter_id}', [ChapterController::class, 'index']);
 Route::put('courses/{course_id}/chapters/{chapter_id}', [ChapterController::class, 'update']);
+Route::delete('/{chapterId}',[ChapterController::class,'destroy']);
 
 
 Route::put('courses/{course_id}/chapters/{chapter_id}', [ChapterController::class, 'update']);
