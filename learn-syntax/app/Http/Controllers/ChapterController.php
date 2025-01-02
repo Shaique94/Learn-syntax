@@ -69,10 +69,8 @@ class ChapterController extends Controller
         ], 200);
     }
 
-    // public function update(Request $request, $course_id, $chapter_id)
+    //     public function update(Request $request, $courseId, $chapterId)
     // {
-
-    //     dd($request->all());
     //     if (empty($request->all())) {
     //         return response()->json([
     //             'status' => 400,
@@ -80,8 +78,8 @@ class ChapterController extends Controller
     //         ], 400);
     //     }
 
-    //     $chapter = Chapter::where('course_id', $course_id)
-    //         ->where('id',  $chapter_id)
+    //     $chapter = Chapter::where('course_id', $courseId)
+    //         ->where('id', $chapterId)
     //         ->first();
 
     //     if (!$chapter) {
@@ -109,10 +107,8 @@ class ChapterController extends Controller
     //         'data' => $chapter,
     //     ]);
     // }
-
     public function update(Request $request, $course_id, $chapter_id)
     {
-        
         $validatedData = $request->validate([
             'chapter_name' => 'required|string',
             'chapter_description' => 'required|string',
@@ -131,15 +127,15 @@ class ChapterController extends Controller
     }
 
 
-
-
-    public function destroy($courseId, $chapterId)
+    public function destroy($chapterId)
     {
-        $chapter = Chapter::where('course_id', $courseId)->where('id', $chapterId)->first();
+        $chapter = Chapter::where('id', $chapterId)->first();
         if (!$chapter) {
             return response()->json(['error' => 'Chapter not found'], 404);
         }
+        //delete chapter with all topics and post
         $chapter->delete();
-        return response()->json(['message' => 'Chapter deleted successfully.'], 200);
+        return response()->json(['message' => 'Chapter and related data deleted successfully.'], 200);
     }
+    
 }
