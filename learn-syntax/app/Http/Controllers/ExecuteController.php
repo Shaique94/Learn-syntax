@@ -98,18 +98,33 @@ JS;
     private function executeCEmscripten($code)
     {
         $tempFile = tempnam(sys_get_temp_dir(), 'CCode');
-        file_put_contents($tempFile . '.c', $code);
+        $tempCFile = $tempFile . '.c';
+        $outputFile = $tempFile . '.html';
 
-        // Use Emscripten to compile C code to WebAssembly
-        $process = new Process(['emcc', $tempFile . '.c', '-o', $tempFile . '.html']);
-        $process->run();
+        file_put_contents($tempCFile, $code);
 
-        if (!$process->isSuccessful()) {
-            return "C Compilation Error: " . $process->getErrorOutput();
+        try {
+            $process = new Process(['emcc', $tempCFile, '-o', $outputFile]);
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                return "C Compilation Error: " . $process->getErrorOutput();
+            }
+
+            if (file_exists($outputFile)) {
+                return file_get_contents($outputFile);
+            } else {
+                return "C Compilation completed, but no output generated.";
+            }
+        } catch (\Exception $e) {
+            return "C Compilation Error: " . $e->getMessage();
+        } finally {
+            // Cleanup temporary files
+            @unlink($tempCFile);
+            @unlink($outputFile);
         }
-
-        return file_get_contents($tempFile . '.html');
     }
+
 
     private function executeCPPEmscripten($code)
     {
