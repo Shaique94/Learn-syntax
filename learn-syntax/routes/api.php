@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ChapterController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExecuteController;
 use App\Http\Controllers\PostApiController;
@@ -66,6 +67,9 @@ Route::prefix('topics/{topic_id}/posts')->group(function () {
    // Delete a specific post in a topic
    Route::delete('/{post_id}', [PostContentApiController::class, 'destroy']);
 });
+//Route for contact us page
+Route::post('contact',[ContactController::class,'submit']);
+
 Route::middleware([])->group(function () {
    Route::post('/v2/execute', [ExecuteController::class, 'execute']);
 });
