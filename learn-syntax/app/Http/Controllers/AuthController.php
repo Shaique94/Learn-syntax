@@ -139,9 +139,6 @@ class AuthController extends Controller
             ], 401);
         }
     }
-
-    
-
     // Respond with token details
     protected function respondWithToken($token)
     {

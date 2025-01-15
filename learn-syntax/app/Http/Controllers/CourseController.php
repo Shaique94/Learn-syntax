@@ -30,7 +30,7 @@ class CourseController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
-            'description' => 'required|string|max:550',
+            'description' => 'required|string',
             'image' => 'required|image|max:2048',
         ]);
 
