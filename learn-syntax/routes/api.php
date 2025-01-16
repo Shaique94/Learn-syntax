@@ -19,6 +19,7 @@ Route::middleware('auth:api')->put('/user', [AuthController::class, 'user']);
 // Authentication routes
 Route::post('auth/register', [AuthController::class, 'register']);
 Route::post('auth/login', [AuthController::class, 'login']);
+Route::post('auth/google-login', [AuthController::class, 'googleLogin']);
 Route::post('auth/logout', [AuthController::class, 'logout']);
 
 // Course routes

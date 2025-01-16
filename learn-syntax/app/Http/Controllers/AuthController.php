@@ -56,8 +56,50 @@ class AuthController extends Controller
 
         return response()->json(['error' => 'Invalid credentials', 'message' => 'login successfully'], 401);
     }
+    public function googleLogin(Request $request)
+    {
+        // Validate the request to ensure the Google ID token is provided
+        $request->validate(['token' => 'required|string']);
+    
+        try {
+            // Verify the Google token
+            $client = new \Google_Client(['client_id' => env('GOOGLE_CLIENT_ID')]);
+            $data = $client->verifyIdToken($request->input('token'));
+            if ($data) {
+                // Retrieve the user data from the Google token
+                $googleId = $data['sub'];
+                $googleEmail = $data['email'];
+                $googleName = $data['name'];
+                $googlePicture = $data['picture'];
+    
+                // Check if the user already exists in the database
+                $user = User::firstOrCreate(
+                    ['email' => $googleEmail], // Match user by email
+                    [   'google_id' =>  $googleId,
+                        'name' => $googleName,
+                        'password' => Hash::make(uniqid()), // Generate a random password
+                        'profile_pic' => $googlePicture
+                    ]
+                );
+    
+                // Create a JWT token for the authenticated user
+                $token = JWTAuth::fromUser($user);
+    
+                return response()->json([
+                    'access_token' => $token,
+                    'user' => $user,
+                    'message' => 'Google login successful',
+                ], 200);
+            } else {
+                return response()->json(['error' => 'Invalid Google token'], 400);
+            }
+        } catch (\Exception $e) {
+            // Handle errors gracefully
+            return response()->json(['error' => 'Google login failed', 'details' => $e->getMessage()], 500);
+        }
+    }
 
-
+    
     public function User(Request $request)
     {
         try {
